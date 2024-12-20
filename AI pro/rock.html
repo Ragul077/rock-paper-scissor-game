@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock Paper Scissors AI Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background-color: #f4f4f9;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    select, button {
+      font-size: 20px;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #result, #finalResult {
+      margin-top: 20px;
+      font-size: 24px;
+      color: #333;
+    }
+
+    #score {
+      font-size: 20px;
+      color: #666;
+    }
+
+    .game-buttons {
+      display: none;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Rock, Paper, Scissors (AI Version)</h1>
+
+  <label for="rounds">Select number of rounds:</label>
+  <select id="rounds">
+    <option value="3">3 Rounds</option>
+    <option value="5">5 Rounds</option>
+    <option value="7">7 Rounds</option>
+  </select>
+  <button onclick="startGame()">Start Game</button>
+
+  <div class="game-buttons">
+    <button onclick="play('Rock')">Rock</button>
+    <button onclick="play('Paper')">Paper</button>
+    <button onclick="play('Scissors')">Scissors</button>
+  </div>
+
+
+  <h2 id="result"></h2>
+  <h3 id="score"></h3>
+  <h2 id="finalResult"></h2>
+
+  <script>
+
+    let totalRounds, currentRound, playerWins, aiWins;
+    let playerHistory = { Rock: 0, Paper: 0, Scissors: 0 };
+
+    function startGame() {
+      totalRounds = parseInt(document.getElementById('rounds').value); 
+      currentRound = 0;
+      playerWins = 0;
+      aiWins = 0;
+      playerHistory = { Rock: 0, Paper: 0, Scissors: 0 }; 
+      
+      document.getElementById('result').innerText = ''; 
+      document.getElementById('score').innerText = '';
+      document.getElementById('finalResult').innerText = '';
+
+  
+      document.querySelector('.game-buttons').style.display = 'block';
+
+      alert(`Game started! You will play ${totalRounds} rounds.`);
+    }
+
+  
+    function aiChoice() {
+      const maxChoice = Object.keys(playerHistory).reduce((a, b) => playerHistory[a] > playerHistory[b] ? a : b);
+      
+    
+      switch (maxChoice) {
+        case 'Rock': return 'Paper';  
+        case 'Paper': return 'Scissors';
+        case 'Scissors': return 'Rock';
+        default: return 'Rock'; 
+      }
+    }
+
+  
+    function play(playerChoice) {
+      playerHistory[playerChoice]++;
+
+      const aiMove = aiChoice(); // AI chooses based on player's history
+
+      let result = `Round ${currentRound + 1}: You chose ${playerChoice}, AI chose ${aiMove}. `;
+
+      if (playerChoice === aiMove) {
+        result += "It's a tie!";
+      } else if (
+        (playerChoice === 'Rock' && aiMove === 'Scissors') ||
+        (playerChoice === 'Paper' && aiMove === 'Rock') ||
+        (playerChoice === 'Scissors' && aiMove === 'Paper')
+      ) {
+        result += 'You win this round!';
+        playerWins++;
+      } else {
+        result += 'AI wins this round!';
+        aiWins++;
+      }
+
+      currentRound++;
+
+      document.getElementById('result').innerText = result;
+      document.getElementById('score').innerText = `Score: Player ${playerWins} - AI ${aiWins}`;
+
+      if (currentRound === totalRounds) {
+        document.querySelector('.game-buttons').style.display = 'none';
+
+        if (playerWins > aiWins) {
+          document.getElementById('finalResult').innerText = 'Congratulations! You are the overall winner!';
+        } else if (aiWins > playerWins) {
+          document.getElementById('finalResult').innerText = 'AI wins the game! Better luck next time!';
+        } else {
+          document.getElementById('finalResult').innerText = "It's a tie game!";
+        }
+      }
+    }
+  </script>
+</body>
+</html>
